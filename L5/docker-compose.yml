@@ -1,0 +1,58 @@
+services: 
+  cassandra-1: 
+    image: cassandra:latest 
+    container_name: cassandra-1 
+    hostname: cassandra-1 
+    ports: 
+      - "9042:9042" 
+    volumes: 
+      - cassandra-data-1:/var/lib/cassandra 
+    environment: 
+      - CASSANDRA_CLUSTER_NAME=MyCluster 
+      - CASSANDRA_DC=datacenter1 
+      - CASSANDRA_RACK=rack1 
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch 
+      - MAX_HEAP_SIZE=1500M 
+    networks: 
+      - cassandra-net 
+ 
+  cassandra-2: 
+    image: cassandra:latest 
+    container_name: cassandra-2 
+    hostname: cassandra-2 
+    volumes: 
+      - cassandra-data-2:/var/lib/cassandra 
+    environment: 
+      - CASSANDRA_CLUSTER_NAME=MyCluster 
+      - CASSANDRA_DC=datacenter1 
+      - CASSANDRA_RACK=rack1 
+      - CASSANDRA_SEEDS=cassandra-1 
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch 
+      - MAX_HEAP_SIZE=1500M 
+    networks: 
+      - cassandra-net 
+    depends_on: 
+    - cassandra-1 
+  cassandra-3: 
+    image: cassandra:latest 
+    container_name: cassandra-3 
+    hostname: cassandra-3 
+    volumes: 
+      - cassandra-data-3:/var/lib/cassandra 
+    environment: 
+      - CASSANDRA_CLUSTER_NAME=MyCluster 
+      - CASSANDRA_DC=datacenter1 
+      - CASSANDRA_RACK=rack1 
+      - CASSANDRA_SEEDS=cassandra-1 
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch 
+      - MAX_HEAP_SIZE=1500M 
+    networks: 
+      - cassandra-net 
+    depends_on: 
+      - cassandra-2 
+networks: 
+  cassandra-net: {} 
+volumes: 
+  cassandra-data-1: {} 
+  cassandra-data-2: {} 
+  cassandra-data-3: {}
